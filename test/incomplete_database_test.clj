@@ -2,10 +2,7 @@
   (:require [clojure.test :refer :all]
             [logical-interpreter :refer :all]))
 
-(def incomplete-database "
-	varon(juan).
-	varon
-")
+(def incomplete-database "db-test/incomplete-database.txt")
 
 (deftest incomplete-database-fact-test
   (testing "varon(juan) should be nil"

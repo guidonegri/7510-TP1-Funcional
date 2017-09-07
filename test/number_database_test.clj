@@ -2,18 +2,7 @@
   (:require [clojure.test :refer :all]
             [logical-interpreter :refer :all]))
 
-(def number-database "
-	add(zero, zero, zero).
-	add(zero, one, one).
-	add(zero, two, two).
-	add(one, zero, one).
-	add(one, one, two).
-	add(one, two, zero).
-	add(two, zero, two).
-	add(two, one, zero).
-	add(two, two, one).
-	subtract(X, Y, Z) :- add(Y, Z, X).
-")
+(def number-database "db-test/number-database.txt")
 
 (deftest number-database-fact-test
   (testing "add(one, one, two) should be true"

@@ -11,19 +11,19 @@
 
 ;GETTERS:
 (defn get-name-of
-  ;Returns the name of a query, fact or rule. e.g: "varon(jorge)" returns "varon" 
+  ;Returns the name of a query, fact or rule.
   [item pattern]
   (second (re-find pattern item))
 )
 
 (defn get-params-of
-  ;Returns vector with the params of a query or rule. e.g: "hijo(X, Y) :- varon(X), padre(Y, X)" returns "["X" "Y"]"
+  ;Returns vector with the params of a query or rule.
   [item pattern]
   (str/split (nth (re-find pattern item) 2) #", " )
 )
 
 (defn get-facts-of-rule
-  ;Returns the facts of a rule. e.g: "hijo(X, Y) :- varon(X), padre(Y, X)" returns "varon(X), padre(Y, X)"
+  ;Returns the facts of a rule.
   [rule]
   (nth (re-find rule-pattern rule) 3)
 )
@@ -31,7 +31,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;VALIDATES:
-(defn is-valid-database
+(defn is-invalid-database
   [db]
   (distinct? (count (filter #(re-matches fact-pattern %) db)) (count db) )
 )
@@ -44,14 +44,14 @@
 (defn is-rule-in-database
   [query db]
   (let [query-name (get-name-of query query-pattern)]
-    (> (count (filter (fn[item](= query-name (get-name-of item rule-pattern))) db)) 0)
+    (= (count (filter (fn[item](= query-name (get-name-of item rule-pattern))) db)) 1) ;=1 because rule is unic
   )
 )
 
 (defn is-fact-in-database
   [query db]
   (let [query-name (get-name-of query query-pattern)]
-    (> (count (filter (fn[item](= query-name (get-name-of item fact-pattern))) db)) 0 )
+    (> (count (filter (fn[item](= query-name (get-name-of item fact-pattern))) db)) 0 ) ;>0 because 0 because there may be more than one fact with the same name
   )
 )
 
@@ -116,7 +116,7 @@
   (let [db-str (slurp (java.io.FileReader. db-file))
         db (str/split db-str #".\n")]                
     (cond
-      (is-valid-database db) nil
+      (is-invalid-database db) nil
       (is-invalid-query query) nil
       (is-fact-in-database query db) (query-fact db query)
       (is-rule-in-database query db) (query-rule db query)
